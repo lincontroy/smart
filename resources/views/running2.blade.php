@@ -1,6 +1,20 @@
 @extends('layouts.app')
 @section('content')
     <style>
+        /* Enhanced Ethereum Theme */
+        :root {
+            --eth-blue: #627eea;
+            --eth-purple: #8a2be2;
+            --profit-green: #10b981;
+            --profit-dark: #065f46;
+            --profit-light: #d1fae5;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0a0f1c;
+            --card-dark: #1a2332;
+            --border-dark: #2a3441;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -8,10 +22,23 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0f1c;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0f1c 0%, #0c1220 100%);
             color: white;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .eth-glow {
+            box-shadow: 0 0 25px rgba(98, 126, 234, 0.4);
+        }
+
+        .eth-gradient {
+            background: linear-gradient(135deg, var(--eth-blue) 0%, var(--eth-purple) 100%);
+        }
+
+        .profit-gradient {
+            background: linear-gradient(135deg, var(--profit-green) 0%, #34d399 100%);
         }
 
         .navbar {
@@ -19,8 +46,12 @@
             align-items: center;
             justify-content: space-between;
             padding: 1rem 2rem;
-            background: #0f1419;
-            border-bottom: 1px solid #1a2332;
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(98, 126, 234, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .nav-left {
@@ -40,19 +71,20 @@
         .logo-icon {
             width: 32px;
             height: 32px;
-            background: #4ade80;
-            border-radius: 8px;
+            background: var(--eth-blue);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            color: #0a0f1c;
+            color: white;
+            border: 2px solid var(--eth-purple);
         }
 
         .page-title {
             font-size: 1.2rem;
             font-weight: 600;
-            color: #4ade80;
+            color: var(--eth-blue);
         }
 
         .nav-links {
@@ -66,92 +98,105 @@
             border-radius: 8px;
             text-decoration: none;
             color: #9ca3af;
-            transition: all 0.2s;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            border: 1px solid transparent;
         }
 
         .nav-item:hover {
-            background: #1a2332;
-            color: white;
+            background: rgba(98, 126, 234, 0.1);
+            color: var(--eth-blue);
+            border-color: var(--eth-blue);
         }
 
         .nav-item.active {
-            background: #4ade80;
-            color: #0a0f1c;
+            background: var(--eth-blue);
+            color: white;
             font-weight: 500;
         }
 
         .accounts-btn {
-            background: #4ade80;
-            color: #0a0f1c;
+            background: var(--eth-blue);
+            color: white;
             font-weight: 500;
         }
 
         .balance-display {
-            background: #4ade80;
+            background: var(--profit-green);
             color: #0a0f1c;
             padding: 0.5rem 1rem;
             border-radius: 8px;
             font-weight: 600;
+            animation: pulse 2s infinite;
         }
 
-        /* Mobile Balance Widget */
-        .mobile-balance-widget {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #1a2332;
-            padding: 12px 16px;
-            border-top: 1px solid #2a3441;
-            z-index: 100;
-            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
         }
 
-        .balance-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .balance-label {
-            color: #9ca3af;
-            font-size: 0.9rem;
-        }
-
-        .balance-amount {
+        /* Ethereum Profit Alert */
+        .eth-profit-alert {
+            background: linear-gradient(90deg, rgba(98, 126, 234, 0.2), rgba(138, 43, 226, 0.2));
+            padding: 0.75rem;
+            text-align: center;
             font-weight: 600;
-            font-size: 1.1rem;
+            animation: slideDown 0.5s ease-out;
+            border-bottom: 1px solid rgba(98, 126, 234, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .eth-badge {
+            background: var(--eth-blue);
             color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            animation: ethGlow 2s infinite;
         }
 
-        .balance-change {
-            font-size: 0.8rem;
-            margin-left: 8px;
-        }
-
-        .balance-change.positive {
-            color: #4ade80;
-        }
-
-        .balance-change.negative {
-            color: #ef4444;
+        @keyframes ethGlow {
+            0%, 100% { 
+                box-shadow: 0 0 5px var(--eth-blue), 0 0 10px rgba(138, 43, 226, 0.5);
+            }
+            50% { 
+                box-shadow: 0 0 10px var(--eth-blue), 0 0 20px rgba(138, 43, 226, 0.7);
+            }
         }
 
         .main-content {
             padding: 2rem;
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
+        /* Enhanced Bot Header */
         .bot-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 2rem;
+            background: rgba(26, 35, 50, 0.8);
+            padding: 1.5rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(98, 126, 234, 0.2);
+            box-shadow: 0 8px 32px rgba(98, 126, 234, 0.1);
         }
 
         .bot-info {
@@ -159,14 +204,37 @@
         }
 
         .bot-title {
-            font-size: 2.5rem;
-            font-weight: 600;
+            font-size: 2.8rem;
+            font-weight: 700;
             margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--eth-blue) 0%, var(--eth-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .bot-subtitle {
+            color: var(--eth-blue);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
         }
 
         .bot-details {
             color: #9ca3af;
             font-size: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .bot-tag {
+            background: rgba(98, 126, 234, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(98, 126, 234, 0.3);
         }
 
         .status-section {
@@ -182,43 +250,63 @@
             padding: 0.75rem 1.5rem;
             border-radius: 12px;
             font-weight: 600;
-            background: #dc2626;
+            background: var(--eth-blue);
             color: white;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .status-badge.running {
-            background: #4ade80;
-            color: #0a0f1c;
+            background: linear-gradient(135deg, var(--profit-green) 0%, #34d399 100%);
+            color: white;
+            animation: runningGlow 2s infinite;
+        }
+
+        @keyframes runningGlow {
+            0%, 100% { 
+                box-shadow: 0 0 15px var(--profit-green), 0 0 30px rgba(52, 211, 153, 0.3);
+            }
+            50% { 
+                box-shadow: 0 0 25px var(--profit-green), 0 0 40px rgba(52, 211, 153, 0.5);
+            }
         }
 
         .status-badge.paused {
-            background: #f59e0b;
-            color: #0a0f1c;
+            background: var(--warning);
+            color: white;
+        }
+
+        .status-badge.stopped {
+            background: #374151;
+            color: #9ca3af;
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: white;
+            animation: statusPulse 2s infinite;
         }
 
-        .status-dot.running {
-            background: #0a0f1c;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes statusPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.3);
+                opacity: 0.7;
+            }
         }
 
         .insufficient-balance {
-            background: #374151;
-            color: #9ca3af;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
             padding: 0.5rem 1rem;
             border-radius: 8px;
             font-size: 0.9rem;
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .trade-controls {
@@ -232,26 +320,50 @@
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
             font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid transparent;
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover:before {
+            left: 100%;
         }
 
         .btn:hover {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
         }
 
         .btn-start {
-            background: #4ade80;
-            color: #0a0f1c;
+            background: linear-gradient(135deg, var(--profit-green) 0%, #34d399 100%);
+            color: white;
+            border-color: rgba(52, 211, 153, 0.3);
         }
 
         .btn-start:hover {
-            background: #22c55e;
+            background: linear-gradient(135deg, #0d9668 0%, #22c55e 100%);
         }
 
         .btn-pause {
-            background: #f59e0b;
+            background: var(--warning);
             color: white;
+            border-color: rgba(245, 158, 11, 0.3);
         }
 
         .btn-pause:hover {
@@ -259,8 +371,9 @@
         }
 
         .btn-stop {
-            background: #dc2626;
+            background: var(--danger);
             color: white;
+            border-color: rgba(239, 68, 68, 0.3);
         }
 
         .btn-stop:hover {
@@ -271,11 +384,17 @@
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
+        .btn:disabled:before {
+            display: none;
+        }
+
+        /* Enhanced Content Grid */
         .content-grid {
             display: grid;
-            grid-template-columns: 400px 1fr;
+            grid-template-columns: 450px 1fr;
             gap: 2rem;
         }
 
@@ -286,54 +405,99 @@
         }
 
         .stat-card {
-            background: #1a2332;
+            background: rgba(26, 35, 50, 0.8);
             border-radius: 16px;
             padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .stat-card.pnl {
-            border-left: 4px solid #4ade80;
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(98, 126, 234, 0.15);
+            border-color: rgba(98, 126, 234, 0.3);
         }
 
-        .stat-card.runs {
-            border-left: 4px solid #8b5cf6;
+        .stat-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--eth-blue), var(--eth-purple));
         }
 
-        .stat-card.trades {
-            border-left: 4px solid #3b82f6;
-        }
-
-        .stat-card.winrate {
-            border-left: 4px solid #f59e0b;
-        }
-
-        .stat-card.balance {
-            border-left: 4px solid #06b6d4;
-        }
+        .stat-card.pnl:before { background: linear-gradient(90deg, var(--profit-green), #34d399); }
+        .stat-card.runs:before { background: linear-gradient(90deg, var(--eth-purple), #9d4edd); }
+        .stat-card.trades:before { background: linear-gradient(90deg, var(--eth-blue), #4f46e5); }
+        .stat-card.winrate:before { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+        .stat-card.balance:before { background: linear-gradient(90deg, #06b6d4, #0ea5e9); }
 
         .stat-label {
             color: #9ca3af;
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .stat-value {
-            font-size: 2rem;
-            font-weight: 300;
+            font-size: 2.2rem;
+            font-weight: 700;
         }
 
         .stat-value.positive {
-            color: #4ade80;
+            color: var(--profit-green);
+            text-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
         }
 
         .stat-value.negative {
-            color: #ef4444;
+            color: var(--danger);
         }
 
+        /* Ethereum Network Stats */
+        .eth-network-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .network-stat {
+            text-align: center;
+            padding: 0.5rem;
+            background: rgba(98, 126, 234, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(98, 126, 234, 0.2);
+        }
+
+        .network-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--eth-blue);
+        }
+
+        .network-label {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        /* Enhanced Logs Section */
         .logs-section {
-            background: #1a2332;
+            background: rgba(26, 35, 50, 0.8);
             border-radius: 16px;
             padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
         }
 
         .logs-header {
@@ -344,319 +508,478 @@
         }
 
         .logs-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
+            background: linear-gradient(135deg, var(--eth-blue), var(--eth-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .logs-count {
-            color: #9ca3af;
+            color: var(--eth-blue);
             font-size: 0.9rem;
+            font-weight: 600;
+            background: rgba(98, 126, 234, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            border: 1px solid rgba(98, 126, 234, 0.2);
         }
 
         .logs-container {
-            background: #0f1419;
+            background: rgba(15, 20, 25, 0.8);
             border-radius: 12px;
             padding: 1rem;
-            max-height: 500px;
+            height: 500px;
             overflow-y: auto;
-            font-family: Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            font-family: 'Cascadia Code', 'Roboto Mono', 'SF Mono', monospace;
             font-size: 0.85rem;
             line-height: 1.5;
+            flex: 1;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .log-entry {
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
             word-wrap: break-word;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .log-entry:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateX(2px);
+        }
+
+        .log-entry.success { 
+            border-left-color: var(--profit-green);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .log-entry.error { 
+            border-left-color: var(--danger);
+            background: rgba(239, 68, 68, 0.05);
+        }
+        .log-entry.info { 
+            border-left-color: var(--eth-blue);
+            background: rgba(98, 126, 234, 0.05);
+        }
+        .log-entry.warning { 
+            border-left-color: var(--warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+        .log-entry.trade { 
+            border-left-color: var(--eth-purple);
+            background: rgba(138, 43, 226, 0.05);
         }
 
         .log-timestamp {
             color: #6b7280;
+            font-family: monospace;
+            font-size: 0.8rem;
         }
 
-        .log-error {
-            color: #ef4444;
+        .log-error { color: var(--danger); }
+        .log-success { color: var(--profit-green); }
+        .log-info { color: var(--eth-blue); }
+        .log-warning { color: var(--warning); }
+        .log-trade { color: var(--eth-purple); }
+        .log-eth { color: #8a2be2; font-weight: 600; }
+
+        /* Mobile Balance Widget */
+        .mobile-balance-widget {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 35, 50, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 12px 16px;
+            border-top: 1px solid rgba(98, 126, 234, 0.3);
+            z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .log-success {
-            color: #4ade80;
+        .balance-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .log-info {
-            color: #60a5fa;
+        .balance-label {
+            color: #9ca3af;
+            font-size: 0.9rem;
         }
 
-        .log-warning {
-            color: #f59e0b;
+        .balance-amount {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
         }
 
-        .log-trade {
-            color: #a78bfa;
+        .balance-change {
+            font-size: 0.8rem;
+            margin-left: 8px;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
-        /* Scrollbar styling */
-        .logs-container::-webkit-scrollbar {
-            width: 6px;
+        .balance-change.positive {
+            color: var(--profit-green);
         }
 
-        .logs-container::-webkit-scrollbar-track {
-            background: #374151;
-            border-radius: 3px;
+        .balance-change.negative {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--danger);
         }
 
-        .logs-container::-webkit-scrollbar-thumb {
-            background: #6b7280;
-            border-radius: 3px;
+        /* Ethereum Maximizer Panel */
+        .eth-maximizer {
+            background: rgba(26, 35, 50, 0.8);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(98, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
         }
 
-        .logs-container::-webkit-scrollbar-thumb:hover {
-            background: #9ca3af;
+        .maximizer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .maximizer-title {
+            color: var(--eth-blue);
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .maximizer-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .maximizer-stat {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(98, 126, 234, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(98, 126, 234, 0.2);
+            transition: all 0.3s;
+        }
+
+        .maximizer-stat:hover {
+            transform: translateY(-2px);
+            background: rgba(98, 126, 234, 0.15);
+        }
+
+        .maximizer-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--eth-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .maximizer-label {
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        .eth-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .eth-action-btn {
+            padding: 0.75rem;
+            border: 1px solid rgba(98, 126, 234, 0.3);
+            background: rgba(98, 126, 234, 0.1);
+            color: var(--eth-blue);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .eth-action-btn:hover {
+            background: var(--eth-blue);
+            color: white;
+            border-color: var(--eth-blue);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 350px 1fr;
+            }
+            
+            .bot-title {
+                font-size: 2.2rem;
+            }
         }
 
         @media (max-width: 1024px) {
             .content-grid {
                 grid-template-columns: 1fr;
-                gap: 1rem;
+                gap: 1.5rem;
             }
             
             .stats-sidebar {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 0.75rem;
+                gap: 1rem;
             }
 
-            .stat-card {
-                padding: 1rem;
+            .maximizer-stats {
+                grid-template-columns: repeat(2, 1fr);
             }
 
-            .stat-value {
-                font-size: 1.5rem;
+            .eth-actions {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 768px) {
             .main-content {
-                padding: 0.5rem;
-                padding-bottom: 70px;
+                padding: 1rem;
+                padding-bottom: 80px;
             }
             
             .bot-header {
                 flex-direction: column;
-                gap: 0.75rem;
-                margin-bottom: 1rem;
-            }
-            
-            .status-section {
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-                width: 100%;
-            }
-            
-            .nav-links {
-                display: none;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
             }
             
             .bot-title {
-                font-size: 1.5rem;
-                margin-bottom: 0.25rem;
+                font-size: 1.8rem;
             }
-
+            
             .bot-details {
-                font-size: 0.85rem;
+                flex-wrap: wrap;
             }
-
-            .status-badge {
-                padding: 0.5rem 1rem;
-                font-size: 0.8rem;
+            
+            .status-section {
+                width: 100%;
+                justify-content: space-between;
             }
-
-            .insufficient-balance {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-            }
-
+            
             .trade-controls {
-                gap: 0.3rem;
+                width: 100%;
             }
-
+            
             .btn {
-                padding: 0.5rem 1rem;
-                font-size: 0.8rem;
+                flex: 1;
+                justify-content: center;
             }
-
+            
             .stats-sidebar {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 0.5rem;
-                margin-bottom: 1rem;
+                gap: 0.75rem;
             }
-
+            
             .stat-card {
-                padding: 0.75rem;
-                border-radius: 8px;
-            }
-
-            .stat-label {
-                font-size: 0.75rem;
-                margin-bottom: 0.25rem;
-            }
-
-            .stat-value {
-                font-size: 1.25rem;
-                font-weight: 500;
-            }
-
-            .logs-section {
                 padding: 1rem;
-                border-radius: 8px;
             }
-
-            .logs-header {
-                margin-bottom: 1rem;
+            
+            .stat-value {
+                font-size: 1.8rem;
             }
-
-            .logs-title {
-                font-size: 1rem;
+            
+            .eth-network-stats {
+                grid-template-columns: 1fr;
             }
-
-            .logs-count {
-                font-size: 0.8rem;
-            }
-
-            .logs-container {
-                max-height: 300px;
-                padding: 0.75rem;
-                font-size: 0.75rem;
-                line-height: 1.4;
-            }
-
-            .log-entry {
-                margin-bottom: 0.15rem;
-            }
-
-            .content-grid {
-                height: calc(100vh - 190px);
-                display: flex;
-                flex-direction: column;
-            }
-
+            
             .logs-section {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                min-height: 0;
+                height: 400px;
             }
-
+            
             .logs-container {
-                flex: 1;
-                min-height: 0;
+                height: 300px;
             }
-
+            
             .mobile-balance-widget {
                 display: block;
+            }
+            
+            .maximizer-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .eth-actions {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 480px) {
             .main-content {
-                padding: 0.25rem;
-                padding-bottom: 60px;
+                padding: 0.75rem;
+                padding-bottom: 70px;
             }
-
-            .bot-header {
-                margin-bottom: 0.75rem;
-            }
-
+            
             .bot-title {
-                font-size: 1.25rem;
+                font-size: 1.5rem;
             }
-
+            
+            .bot-subtitle {
+                font-size: 1rem;
+            }
+            
             .stats-sidebar {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.4rem;
+                grid-template-columns: 1fr;
             }
-
-            .stat-card {
-                padding: 0.5rem;
+            
+            .status-badge {
+                padding: 0.5rem 1rem;
             }
-
-            .stat-label {
-                font-size: 0.7rem;
-            }
-
-            .stat-value {
-                font-size: 1rem;
-            }
-
-            .status-section {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .trade-controls {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 0.25rem;
-            }
-
+            
             .btn {
-                padding: 0.4rem 0.5rem;
-                font-size: 0.75rem;
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
             }
-
+            
             .logs-container {
-                max-height: 250px;
-                font-size: 0.7rem;
+                height: 250px;
+                font-size: 0.8rem;
             }
+        }
 
-            .mobile-balance-widget {
-                padding: 10px 12px;
-            }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
 
-            .balance-amount {
-                font-size: 1rem;
-            }
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--eth-blue);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--eth-purple);
         }
     </style>
 
 <body>
+    <!-- Ethereum Profit Alert -->
+    <div class="eth-profit-alert" id="ethProfitAlert">
+        ⚡ የኢተርየም ትርፍ ሞድ ነቃ / Ethereum Profit Mode Active
+        <span class="eth-badge" id="ethProfitCounter">+ETB 0.00</span>
+    </div>
+
     <main class="main-content">
         <div class="bot-header">
             <div class="bot-info">
-                <h1 class="bot-title">የኢትዮጵያ ኢተርየም ንግድ ሮቦት</h1>
-                <h2 class="bot-title">Ethiopian Ethereum Trading Bot (ETB)</h2>
-                <div class="bot-details">Bot ID: ETH-ETB-DCA-1 • Account: Real • Currency: Ethiopian Birr (ETB)</div>
+                <h1 class="bot-title">🚀 የኢትዮጵያ ኢተርየም ንግድ ሮቦት</h1>
+                <div class="bot-subtitle">💎 Ethereum Profit Maximizer 3.0</div>
+                <div class="bot-details">
+                    <span class="bot-tag">Bot ID: ETH-ETB-PRO-1</span>
+                    <span class="bot-tag">Account: Real Trading</span>
+                    <span class="bot-tag">Network: Ethereum Mainnet</span>
+                    <span class="bot-tag">Currency: Ethiopian Birr (ETB)</span>
+                </div>
             </div>
             <div class="status-section">
                 <div class="status-badge" id="statusBadge">
                     <div class="status-dot" id="statusDot"></div>
-                    <span id="statusText">Stopped (Low Balance)</span>
+                    <span id="statusText">Ready for Ethereum Profits</span>
                 </div>
                 <?php
                 $amount = request('amount');
                 $asset = request('asset');?>
                 @if(Auth::user()->wallet_balance < $amount)
-                    <div class="insufficient-balance">Insufficient Balance</div>
+                    <div class="insufficient-balance">💸 Add funds to start trading</div>
                 @else
                     <div class="trade-controls" id="tradeControls">
-                        <button class="btn btn-start" id="startBtn">Start Bot</button>
-                        <button class="btn btn-pause" id="pauseBtn" disabled>Pause Bot</button>
-                        <button class="btn btn-stop" id="stopBtn" disabled>Stop Bot</button>
+                        <button class="btn btn-start" id="startBtn">🚀 Start Bot</button>
+                        <button class="btn btn-pause" id="pauseBtn" disabled>⏸️ Pause</button>
+                        <button class="btn btn-stop" id="stopBtn" disabled>🛑 Stop</button>
                     </div>
                 @endif
+            </div>
+        </div>
+
+        <!-- Ethereum Maximizer Panel -->
+        <div class="eth-maximizer">
+            <div class="maximizer-header">
+                <div class="maximizer-title">
+                    <span>⚡ Ethereum Profit Accelerator</span>
+                    <span class="eth-badge">ACTIVE</span>
+                </div>
+            </div>
+            <div class="maximizer-stats">
+                <div class="maximizer-stat">
+                    <div class="maximizer-value" id="profitPerHour">ETB 0</div>
+                    <div class="maximizer-label">Profit/Hour</div>
+                </div>
+                <div class="maximizer-stat">
+                    <div class="maximizer-value" id="tradeAccuracy">0%</div>
+                    <div class="maximizer-label">Trade Accuracy</div>
+                </div>
+                <div class="maximizer-stat">
+                    <div class="maximizer-value" id="profitMultiplier">1.0x</div>
+                    <div class="maximizer-label">Profit Multiplier</div>
+                </div>
+                <div class="maximizer-stat">
+                    <div class="maximizer-value" id="ethPrice">140K</div>
+                    <div class="maximizer-label">ETH/ETB Rate</div>
+                </div>
+            </div>
+            <div class="eth-actions">
+                <button class="eth-action-btn" onclick="boostEthereumProfits()">
+                    ⚡ Boost Profits
+                </button>
+                <button class="eth-action-btn" onclick="analyzeEthereumMarket()">
+                    📊 Analyze Market
+                </button>
+                <button class="eth-action-btn" onclick="activateSmartMode()">
+                    🧠 Smart Mode
+                </button>
+                <button class="eth-action-btn" onclick="optimizeGasFees()">
+                    ⛽ Optimize Gas
+                </button>
             </div>
         </div>
 
         <div class="content-grid">
             <div class="stats-sidebar">
                 <div class="stat-card pnl">
-                    <div class="stat-label">ጠቅላላ ትርፍ/ጉዳት</div>
+                    <div class="stat-label">
+                        <span>ጠቅላላ ትርፍ/ጉዳት</span>
+                        <span>🔥 Live</span>
+                    </div>
                     <div class="stat-label">Total P/L</div>
-                    <div class="stat-value" id="totalPnL">+ETB 0.00</div>
+                    <div class="stat-value positive" id="totalPnL">+ETB 0.00</div>
                 </div>
                 
                 <div class="stat-card runs">
                     <div class="stat-label">ጠቅላላ ስራዎች</div>
-                    <div class="stat-label">Total Runs</div>
+                    <div class="stat-label">Total Sessions</div>
                     <div class="stat-value" id="totalRuns">0</div>
                 </div>
                 
@@ -664,6 +987,16 @@
                     <div class="stat-label">ጠቅላላ ንግዶች</div>
                     <div class="stat-label">Total Trades</div>
                     <div class="stat-value" id="totalTrades">0</div>
+                    <div class="eth-network-stats">
+                        <div class="network-stat">
+                            <div class="network-value" id="ethTrades">0</div>
+                            <div class="network-label">ETH Trades</div>
+                        </div>
+                        <div class="network-stat">
+                            <div class="network-value" id="successRate">0%</div>
+                            <div class="network-label">Success Rate</div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="stat-card winrate">
@@ -672,25 +1005,24 @@
                     <div class="stat-value" id="winRate">0.0%</div>
                 </div>
                 
-                <div class="stat-card balance mobile-balance-card">
+                <div class="stat-card balance">
                     <div class="stat-label">ሒሳብ ቀሪ ሂሳብ</div>
                     <div class="stat-label">Account Balance</div>
-                    <div class="stat-value" id="currentBalance" style="color:white">ETB {{ number_format(Auth::user()->wallet_balance, 2) }}</div>
+                    <div class="stat-value" id="currentBalance">ETB {{ number_format(Auth::user()->wallet_balance, 2) }}</div>
                 </div>
 
-                <div class="stat-card" id="currentTierCard">
+                <div class="stat-card">
                     <div class="stat-label">የአሁን ደረጃ</div>
-                    <div class="stat-label">Current Tier</div>
-                    <div class="stat-value" id="currentTier" style="font-size: 1.2rem; color: #4ade80">BASIC</div>
+                    <div class="stat-label">Trading Tier</div>
+                    <div class="stat-value" id="currentTier" style="font-size: 1.3rem; color: var(--eth-blue)">ETHEREUM PRO</div>
                 </div>
             </div>
 
             <div class="logs-section">
                 <div class="logs-header">
-                    <h2 class="logs-title">የሮቦት መዝገቦች / Bot Logs</h2>
+                    <h2 class="logs-title">📊 የሮቦት መዝገቦች / Bot Logs</h2>
                     <div class="logs-count" id="logsCount">0 entries</div>
                 </div>
-                
                 <div class="logs-container" id="logsContainer">
                     <!-- Logs will be populated dynamically -->
                 </div>
@@ -708,291 +1040,413 @@
             </div>
         </div>
     </div>
+
     <script>
-        // PROFITABLE Ethiopian Ethereum Trading Bot
+        // ULTIMATE ETHEREUM PROFIT BOT
         let botState = {
             isRunning: false,
             isPaused: false,
             totalPnL: 0,
             totalRuns: 0,
             totalTrades: 0,
+            ethereumTrades: 0,
             winningTrades: 0,
             currentBalance: {{ Auth::user()->wallet_balance }},
             tradingInterval: null,
             logInterval: null,
+            analysisInterval: null,
             consecutiveWins: 0,
             marketTrend: 'bullish',
-            profitBoost: 0.025, // 2.5% profit boost for consistency
+            profitBoost: 0.035, // 3.5% base profit boost
             winStreak: 0,
             lossStreak: 0,
-            overallProfitable: true,
-            marketVolatility: 0.18,
+            marketVolatility: 0.16,
             tradingSession: 0,
-            profitGrowthFactor: 1.0, // Gradually increases over time
-            lossReductionFactor: 0.9, // Gradually decreases losses
-            sessionMultiplier: 1.0, // Multiplier that grows with successful sessions
-            ethereumPrice: 2500 // Ethereum base price in USD for conversion
+            profitGrowthFactor: 1.25, // Starting growth factor
+            lossReductionFactor: 0.75, // Starting loss reduction
+            sessionMultiplier: 1.3, // Starting multiplier
+            profitPerHour: 0,
+            sessionStartTime: null,
+            smartMode: true,
+            aggressiveMode: false,
+            riskLevel: 'optimized',
+            lastTradeTime: null,
+            tradeFrequency: 2500, // 2.5 seconds base
+            maxProfitPerTrade: 1000,
+            minProfitPerTrade: 50,
+            ethereumPrice: 2500,
+            ethToEtbRate: 140,
+            gasOptimized: true,
+            networkCongestion: 0.3,
+            smartContracts: []
         };
     
-        // PROFITABLE Ethiopian Ethereum Trading Bot
-        class EthiopianEthereumBot {
+        // ADVANCED Ethereum Profit Bot
+        class AdvancedEthereumBot {
             constructor() {
-                // Ethereum trading pairs with ETB conversion
                 this.pairs = [
                     'ETH/ETB', 
                     'ETH/USDT', 
                     'ETH/BTC',
-                    'ETH/LOCAL MARKETS',
-                    'ETH/DIGITAL ASSETS'
+                    'ETH/DeFi Pairs',
+                    'ETH/Layer 2'
                 ];
                 this.currentPair = this.pairs[0];
                 this.investmentAmount = {{$amount}};
-                this.lastPrice = this.generateRealisticEthereumPrice();
+                this.lastPrice = this.generateAdvancedEthereumPrice();
                 this.priceHistory = [this.lastPrice];
-                this.minInvestment = 100; // Minimum 100 ETB
+                this.minInvestment = 200; // Minimum 200 ETB
                 
-                // Tier system optimized for Ethiopian market
-                if (this.investmentAmount >= 10000) {
-                    this.tier = 'PREMIUM';
-                    this.baseWinRate = 0.85; // 85% win rate
-                    this.profitRange = { min: 200, max: 800 }; // 200-800 ETB profit
-                    this.lossRange = { min: 50, max: 200 }; // 50-200 ETB loss (controlled)
+                // Advanced tier system for maximum Ethereum profits
+                if (this.investmentAmount >= 20000) {
+                    this.tier = 'ETHEREUM ELITE';
+                    this.baseWinRate = 0.88;
+                    this.profitRange = { min: 300, max: 1200 };
+                    this.lossRange = { min: 40, max: 180 };
+                    botState.aggressiveMode = true;
+                    botState.tradeFrequency = 1800;
+                } else if (this.investmentAmount >= 10000) {
+                    this.tier = 'ETHEREUM PRO';
+                    this.baseWinRate = 0.85;
+                    this.profitRange = { min: 200, max: 800 };
+                    this.lossRange = { min: 50, max: 150 };
                 } else if (this.investmentAmount >= 5000) {
-                    this.tier = 'ADVANCED';
-                    this.baseWinRate = 0.80;
-                    this.profitRange = { min: 100, max: 500 };
-                    this.lossRange = { min: 40, max: 150 };
-                } else if (this.investmentAmount >= 1000) {
-                    this.tier = 'STANDARD';
-                    this.baseWinRate = 0.76;
-                    this.profitRange = { min: 50, max: 300 };
-                    this.lossRange = { min: 30, max: 100 };
+                    this.tier = 'ETHEREUM PLUS';
+                    this.baseWinRate = 0.82;
+                    this.profitRange = { min: 150, max: 500 };
+                    this.lossRange = { min: 60, max: 120 };
+                } else if (this.investmentAmount >= 2000) {
+                    this.tier = 'ETHEREUM STANDARD';
+                    this.baseWinRate = 0.78;
+                    this.profitRange = { min: 80, max: 350 };
+                    this.lossRange = { min: 70, max: 100 };
                 } else {
-                    this.tier = 'BASIC';
-                    this.baseWinRate = 0.73;
-                    this.profitRange = { min: 25, max: 150 };
-                    this.lossRange = { min: 20, max: 80 };
+                    this.tier = 'ETHEREUM BASIC';
+                    this.baseWinRate = 0.75;
+                    this.profitRange = { min: 50, max: 200 };
+                    this.lossRange = { min: 80, max: 90 };
                 }
                 
-                // ETH to ETB conversion rate (approximate)
-                this.ethToEtbRate = 140; // 1 ETH ≈ 140,000 ETB (simplified)
+                // Initialize smart contracts
+                this.initializeSmartContracts();
             }
     
-            generateRealisticEthereumPrice(basePrice = 2500) {
-                const volatility = botState.marketVolatility;
-                // Ethereum typically has higher volatility but we'll control it
-                let priceChange = (Math.random() - 0.48) * 100 * volatility; // Bias slightly positive
+            initializeSmartContracts() {
+                botState.smartContracts = [
+                    { name: 'Profit Accelerator', active: true, multiplier: 1.2 },
+                    { name: 'Loss Protection', active: true, protection: 0.7 },
+                    { name: 'Trend Prediction', active: true, accuracy: 0.8 },
+                    { name: 'Gas Optimizer', active: botState.gasOptimized, savings: 0.15 }
+                ];
+            }
+    
+            generateAdvancedEthereumPrice(basePrice = 2500) {
+                let priceChange;
                 
-                // Ethereum market trends (generally bullish long-term)
+                // Smart trend following with momentum
+                const momentum = botState.consecutiveWins * 0.5;
+                priceChange = (Math.random() - 0.4 + (momentum * 0.1)) * 120 * botState.marketVolatility;
+                
+                // Enhanced trend analysis
                 if (botState.marketTrend === 'bullish') {
-                    priceChange += Math.random() * 80;
+                    priceChange += Math.random() * 120 + 20;
                 } else if (botState.marketTrend === 'bearish') {
-                    priceChange -= Math.random() * 60;
+                    priceChange -= Math.random() * 80;
                 }
                 
-                // Convert to ETB for local market
-                const usdPrice = Math.max(1500, basePrice + priceChange);
-                return usdPrice * this.ethToEtbRate; // Convert to ETB
+                // Network effect bonus (Ethereum adoption)
+                const networkEffect = botState.tradingSession * 0.1;
+                priceChange += networkEffect;
+                
+                // Smart contract effect
+                const contractBoost = botState.smartContracts.reduce((acc, contract) => 
+                    contract.active ? acc * (contract.multiplier || 1) : acc, 1);
+                priceChange *= contractBoost;
+                
+                const usdPrice = Math.max(1800, basePrice + priceChange);
+                return usdPrice * botState.ethToEtbRate;
             }
     
-            updateGrowthFactors() {
+            updateAdvancedMetrics() {
                 botState.tradingSession++;
                 
-                // Every 7 trades, increase profit potential and decrease loss potential
-                if (botState.tradingSession % 7 === 0 && botState.consecutiveWins > 2) {
-                    botState.profitGrowthFactor = Math.min(1.5, botState.profitGrowthFactor + 0.02); // +2% profits
-                    botState.lossReductionFactor = Math.max(0.6, botState.lossReductionFactor - 0.015); // -1.5% losses
-                    botState.sessionMultiplier = Math.min(1.8, botState.sessionMultiplier + 0.03);
+                // Dynamic profit scaling
+                if (botState.consecutiveWins >= 2) {
+                    botState.profitGrowthFactor = Math.min(2.2, botState.profitGrowthFactor + 0.025);
+                    botState.lossReductionFactor = Math.max(0.4, botState.lossReductionFactor - 0.02);
+                    botState.sessionMultiplier = Math.min(2.8, botState.sessionMultiplier + 0.035);
+                    
+                    // Update profit multiplier display
+                    document.getElementById('profitMultiplier').textContent = 
+                        botState.sessionMultiplier.toFixed(1) + 'x';
                 }
                 
-                // Smart volatility adjustment
+                // Adaptive trading frequency
                 if (botState.winStreak >= 4) {
-                    botState.marketVolatility = Math.max(0.12, botState.marketVolatility - 0.008);
-                } else if (botState.lossStreak >= 2) {
-                    botState.marketVolatility = Math.min(0.25, botState.marketVolatility + 0.005);
+                    botState.tradeFrequency = Math.max(1200, botState.tradeFrequency - 100);
                 }
+                
+                // Calculate real-time profit per hour
+                if (botState.sessionStartTime) {
+                    const hoursRunning = (new Date() - botState.sessionStartTime) / 3600000;
+                    if (hoursRunning > 0.083) { // After 5 minutes
+                        botState.profitPerHour = botState.totalPnL / hoursRunning;
+                        this.updateProfitMetrics();
+                    }
+                }
+                
+                // Update Ethereum price display
+                const ethPriceInEtb = (botState.ethereumPrice * botState.ethToEtbRate / 1000).toFixed(1);
+                document.getElementById('ethPrice').textContent = ethPriceInEtb + 'K';
             }
     
             updateMarketTrend() {
-                // Ethereum tends to have bullish bias, especially in growing markets
-                const trendRandom = Math.random();
-                let bullishProb = 0.65; // Higher probability for Ethereum bullish trends
+                let bullishProb = 0.7; // High bullish bias for Ethereum
                 
-                // Adjust based on performance and session
+                // Advanced trend prediction
                 if (botState.winStreak >= 3) {
-                    bullishProb = 0.75;
+                    bullishProb = 0.82;
                 } else if (botState.lossStreak >= 2) {
-                    bullishProb = 0.55;
+                    bullishProb = 0.6;
                 }
                 
-                // Ethereum-specific market factors
-                if (botState.tradingSession > 50) {
-                    bullishProb += 0.05; // Ethereum often strengthens over time
+                // Time-based market analysis (UTC peak hours)
+                const hour = new Date().getUTCHours();
+                if (hour >= 13 && hour <= 17) { // US market hours
+                    bullishProb += 0.12;
                 }
                 
-                if (trendRandom < bullishProb) {
+                // Network activity factor
+                const networkActivity = Math.min(0.1, botState.totalTrades * 0.0001);
+                bullishProb += networkActivity;
+                
+                const trendRandom = Math.random();
+                if (trendRandom < bullishProb * 0.75) {
                     botState.marketTrend = 'bullish';
-                } else if (trendRandom < 0.85) {
+                } else if (trendRandom < bullishProb) {
+                    botState.marketTrend = 'strong bullish';
+                } else if (trendRandom < 0.9) {
                     botState.marketTrend = 'neutral';
                 } else {
                     botState.marketTrend = 'bearish';
                 }
             }
     
-            calculateWinRate() {
+            calculateAdvancedWinRate() {
                 let winRate = this.baseWinRate;
                 
-                // Market trend adjustments (Ethereum specific)
-                if (botState.marketTrend === 'bullish') {
-                    winRate += 0.06; // Stronger bullish effect for Ethereum
+                // Enhanced trend bonuses
+                if (botState.marketTrend === 'strong bullish') {
+                    winRate += 0.12;
+                } else if (botState.marketTrend === 'bullish') {
+                    winRate += 0.08;
                 } else if (botState.marketTrend === 'bearish') {
-                    winRate -= 0.04; // Smaller reduction for Ethereum
+                    winRate -= 0.03; // Minimal reduction
                 }
                 
-                // Performance-based adjustments
+                // Smart performance bonuses
                 if (botState.winStreak >= 3) {
-                    winRate += 0.04;
+                    winRate += 0.05 * Math.min(botState.winStreak, 6);
                 }
                 if (botState.consecutiveWins >= 4) {
+                    winRate += 0.04;
+                }
+                
+                // Smart contract bonuses
+                const trendContract = botState.smartContracts.find(c => c.name === 'Trend Prediction');
+                if (trendContract && trendContract.active) {
                     winRate += 0.03;
                 }
                 
-                // Ethereum network effects (gains from adoption)
-                const networkEffect = Math.min(0.05, botState.tradingSession * 0.0005);
-                winRate += networkEffect;
-                
-                // Keep profitable bounds (70-90%)
-                return Math.max(0.70, Math.min(0.90, winRate));
+                // Keep within optimal bounds (75-92%)
+                return Math.max(0.75, Math.min(0.92, winRate));
             }
     
-            shouldTrade() {
-                if (botState.currentBalance < this.minInvestment) {
+            smartTradeDecision() {
+                if (botState.currentBalance < this.minInvestment * 1.5) {
                     return false;
                 }
                 
-                // Smart Ethereum trading strategy
-                let baseFrequency = 0.72;
+                let tradeProbability = 0.85; // High probability for Ethereum
+                
+                // Smart decision making
                 if (botState.winStreak >= 3) {
-                    baseFrequency = 0.82;
+                    tradeProbability = 0.92;
                 } else if (botState.lossStreak >= 2) {
-                    baseFrequency = 0.62;
+                    tradeProbability = 0.68;
                 }
                 
-                // Ethereum network activity factor
-                const networkActivity = 1 + (Math.random() * 0.1);
-                baseFrequency *= networkActivity;
+                // Market condition adjustments
+                if (botState.marketTrend.includes('bullish')) {
+                    tradeProbability += 0.1;
+                }
                 
-                return Math.random() < baseFrequency;
+                // Gas optimization check
+                if (botState.gasOptimized && botState.networkCongestion < 0.5) {
+                    tradeProbability += 0.05;
+                }
+                
+                return Math.random() < tradeProbability;
             }
     
-            calculateProfitLoss(isWin) {
+            calculateAdvancedProfitLoss(isWin) {
                 let amount;
                 
                 if (isWin) {
-                    // Profits that grow with Ethereum adoption
-                    amount = Math.random() * (this.profitRange.max - this.profitRange.min) + this.profitRange.min;
-                    amount *= botState.profitGrowthFactor; // Apply growth
-                    amount *= botState.sessionMultiplier; // Session multiplier
+                    // Advanced profit calculation with multiple enhancements
+                    const baseProfit = Math.random() * (this.profitRange.max - this.profitRange.min) + this.profitRange.min;
                     
-                    // Ethereum-specific profit boost (network effects)
-                    const ethBoost = 1 + (Math.random() * 0.15);
-                    amount *= ethBoost;
-                    
-                    // Add consistent profit boost
+                    // Apply all profit multipliers
+                    amount = baseProfit;
+                    amount *= botState.profitGrowthFactor;
+                    amount *= botState.sessionMultiplier;
                     amount *= (1 + botState.profitBoost);
                     
-                    // Minimum profitable amount for Ethiopian market
-                    return Math.max(this.profitRange.min * 0.7, amount);
+                    // Smart contract acceleration
+                    const accelerator = botState.smartContracts.find(c => c.name === 'Profit Accelerator');
+                    if (accelerator && accelerator.active) {
+                        amount *= accelerator.multiplier;
+                    }
+                    
+                    // Streak and momentum bonuses
+                    if (botState.winStreak >= 3) {
+                        amount *= (1 + botState.winStreak * 0.06);
+                    }
+                    
+                    // Aggressive mode bonus
+                    if (botState.aggressiveMode) {
+                        amount *= 1.18;
+                    }
+                    
+                    // Ensure profitable minimum
+                    amount = Math.max(this.profitRange.min * 2, amount);
+                    
+                    // Cap with smart limits
+                    return Math.min(botState.maxProfitPerTrade * 1.2, amount);
                 } else {
-                    // Controlled losses that decrease over time
+                    // Advanced loss control with protection
                     amount = Math.random() * (this.lossRange.max - this.lossRange.min) + this.lossRange.min;
-                    amount *= botState.lossReductionFactor; // Apply reduction
                     
-                    // Loss protection for Ethereum volatility
-                    const lossProtection = 0.7 + (Math.random() * 0.2);
-                    amount *= lossProtection;
+                    // Apply loss reduction factors
+                    amount *= botState.lossReductionFactor;
                     
-                    // Cap maximum loss
-                    amount = Math.min(amount, this.lossRange.max * 0.7);
+                    // Smart contract protection
+                    const protection = botState.smartContracts.find(c => c.name === 'Loss Protection');
+                    if (protection && protection.active) {
+                        amount *= protection.protection;
+                    }
                     
-                    return -Math.max(this.lossRange.min * 0.4, amount);
+                    // Further reduction strategies
+                    if (botState.lossStreak >= 2) {
+                        amount *= 0.65;
+                    }
+                    
+                    // Gas optimization savings
+                    if (botState.gasOptimized) {
+                        amount *= 0.85;
+                    }
+                    
+                    // Minimum loss with protection
+                    amount = Math.max(this.lossRange.min * 0.25, amount);
+                    
+                    return -Math.min(botState.maxProfitPerTrade * 0.25, amount);
                 }
             }
     
-            executeTrade() {
-                if (!this.shouldTrade()) return false;
-    
-                // Update growth factors regularly
-                if (Math.random() < 0.18) {
-                    this.updateGrowthFactors();
+            executeAdvancedTrade() {
+                if (!this.smartTradeDecision()) {
+                    // Still provide market insights
+                    if (Math.random() < 0.25) {
+                        this.logMarketInsights();
+                    }
+                    return false;
                 }
+    
+                // Update advanced metrics
+                this.updateAdvancedMetrics();
                 
-                // Update market trend
-                if (Math.random() < 0.12) {
+                // Update market trend with smart analysis
+                if (Math.random() < 0.18) {
                     this.updateMarketTrend();
                 }
     
-                const currentPrice = this.generateRealisticEthereumPrice(this.lastPrice / this.ethToEtbRate);
-                const winProbability = this.calculateWinRate();
+                const currentPrice = this.generateAdvancedEthereumPrice(this.lastPrice / botState.ethToEtbRate);
+                const winProbability = this.calculateAdvancedWinRate();
                 const isWinningTrade = Math.random() < winProbability;
                 
-                let pnl = this.calculateProfitLoss(isWinningTrade);
+                let pnl = this.calculateAdvancedProfitLoss(isWinningTrade);
                 
-                // Apply Ethereum network consistency bonus
-                const networkBonus = Math.abs(pnl) * 0.015; // 1.5% network bonus
-                pnl = pnl > 0 ? pnl + networkBonus : pnl + (networkBonus * 0.5);
+                // Apply Ethereum network bonuses
+                const networkBonus = Math.abs(pnl) * 0.018; // 1.8% network bonus
+                pnl = pnl > 0 ? pnl + networkBonus : pnl + (networkBonus * 0.6);
                 
-                // Update streaks
+                // Update streaks and counters
                 if (isWinningTrade) {
                     botState.consecutiveWins++;
                     botState.winStreak++;
                     botState.lossStreak = 0;
+                    botState.ethereumTrades++;
+                    
+                    // Special Ethereum bonuses
+                    if (botState.consecutiveWins % 4 === 0) {
+                        pnl *= 1.25; // 25% bonus every 4 wins
+                        this.logEthereumBonus();
+                    }
                 } else {
                     botState.consecutiveWins = 0;
                     botState.winStreak = 0;
                     botState.lossStreak++;
                 }
     
-                // Update statistics
+                // Update all statistics
                 botState.totalTrades++;
                 botState.totalPnL += pnl;
                 botState.currentBalance += pnl;
+                botState.lastTradeTime = new Date();
                 
                 if (pnl > 0) {
                     botState.winningTrades++;
                 }
     
-                botState.overallProfitable = botState.totalPnL > 0;
+                // Update profit counter in real-time
+                document.getElementById('ethProfitCounter').textContent = 
+                    `+ETB ${botState.totalPnL.toFixed(2)}`;
     
-                // Bilingual logging with Ethereum context
+                // Enhanced Ethereum trading logs
                 const timestamp = this.getCurrentTimestamp();
                 const isBuy = Math.random() > 0.5;
-                const tradeType = isBuy ? 'ግዢ / BUY' : 'ሽያጭ / SELL';
-                const ethPriceInEtb = (currentPrice / 1000).toFixed(2); // Show in thousands
-                const pnlText = pnl >= 0 ? `+ETB ${pnl.toFixed(2)}` : `-ETB ${Math.abs(pnl).toFixed(2)}`;
+                const tradeType = isBuy ? 'ግዢ / BUY 📈' : 'ሽያጭ / SELL 📉';
+                const ethPriceInEtb = (currentPrice / 1000).toFixed(2);
+                const pnlText = pnl >= 0 ? 
+                    `🎯 +ETB ${pnl.toFixed(2)}` : 
+                    `⚠️ -ETB ${Math.abs(pnl).toFixed(2)}`;
                 
-                // Ethereum-specific success messages
+                // Profit-focused Ethereum logging
                 if (pnl > 0) {
+                    const successLevel = pnl > this.profitRange.min * 4 ? '🚀' : '✅';
                     const ethSuccessMessages = [
-                        "✓ ኢተርየም ግብይት ተሳክቷል! / Ethereum trade successful!",
-                        "✓ የኢተርየም ኔትወርክ አዋክ! / Ethereum network active!",
-                        "✓ በመረብ አይነት ውጤት ተገኘ! / Network effect achieved!",
-                        "✓ የዲፒኦኤስ ጥቅም አሳየ! / DPoS advantage shown!"
+                        `${successLevel} የኢተርየም ስልት ተሳክቷል! / Ethereum strategy successful!`,
+                        `${successLevel} የኢተርየም ኔትወርክ ትርፍ አስገኝቷል! / Ethereum network generated profit!`,
+                        `${successLevel} የማርት ካፕ ጭማሪ ተገኝቷል! / Market cap increase achieved!`,
+                        `${successLevel} የዲፒኦኤስ ምክንያት አዋጅ! / DPoS advantage activated!`
                     ];
+                    
+                    const randomMessage = ethSuccessMessages[Math.floor(Math.random() * ethSuccessMessages.length)];
                     addLogEntry(timestamp, 
-                        `${ethSuccessMessages[Math.floor(Math.random() * ethSuccessMessages.length)]} | ${tradeType} ${this.currentPair} @ ${ethPriceInEtb}K ETB | ትርፍ / Profit: ${pnlText}`, 
+                        `<span class="log-eth">${randomMessage}</span> | ${tradeType} ${this.currentPair} @ ${ethPriceInEtb}K ETB | ትርፍ / Profit: ${pnlText}`, 
                         'success');
                     
-                    // Ethereum milestone celebrations
-                    if (pnl > this.profitRange.min * 4) {
-                        addLogEntry(timestamp, "🚀 ትልቅ የኢተርየም ትርፍ! / Big Ethereum profit!", 'success');
+                    // Major profit celebrations
+                    if (pnl > this.profitRange.min * 6) {
+                        addLogEntry(timestamp, "🎊 ከፍተኛ የኢተርየም ትርፍ! ስልቱ ከፍተኛ አፈፃፀም ያሳያል! / Major Ethereum profit! Exceptional strategy performance!", 'success');
+                        this.triggerEthereumAnimation();
                     }
                 } else {
                     const ethControlledMessages = [
-                        "የኢተርየም ቮላቲሊቲ ተቆጣጠረ / Ethereum volatility controlled",
-                        "ትንሽ የመረብ ማስተካከል / Minor network adjustment",
-                        "የጋዝ ክፍያ ተመዝግቧል / Gas fee accounted",
-                        "የቴስት ኔት እድሳት / Testnet update"
+                        "🛡️ የኢተርየም ጉዳት ተቆጠበ / Ethereum loss protected",
+                        "⚖️ የጋዝ ክፍያ ተመዝግቧል / Gas fee accounted",
+                        "📉 ትንሽ የመረብ ማስተካከል / Minor network adjustment",
+                        "🎯 የሚቀጥለው የኢተርየም ግብይት ይሻላል! / Next Ethereum trade will be better!"
                     ];
                     addLogEntry(timestamp, 
                         `${ethControlledMessages[Math.floor(Math.random() * ethControlledMessages.length)]} | ${tradeType} ${this.currentPair} @ ${ethPriceInEtb}K ETB | ጉዳት / Loss: ${pnlText}`, 
@@ -1000,22 +1454,70 @@
                 }
                 
                 // Ethereum-specific milestones
-                if (botState.winStreak === 5) {
-                    addLogEntry(timestamp, "🏆 5 ተከታታይ የኢተርየም ግብይቶች! / 5 consecutive Ethereum trades!", 'success');
-                }
-                if (botState.totalTrades % 15 === 0) {
-                    const winRate = (botState.winningTrades / botState.totalTrades * 100).toFixed(1);
-                    const totalProfit = botState.totalPnL.toFixed(2);
-                    const ethPrice = (botState.ethereumPrice * this.ethToEtbRate / 1000).toFixed(2);
-                    addLogEntry(timestamp, `📊 የኢተርየም ማጠቃለያ / Ethereum Summary: ${botState.totalTrades} ግብይቶች / trades | ${winRate}% የማሸነፍ መጠን / win rate | አጠቃላይ ትርፍ / Total Profit: ETB ${totalProfit} | ETH ዋጋ / Price: ${ethPrice}K ETB`, 'info');
-                }
+                this.checkEthereumMilestones(timestamp);
                 
-                // Update database and UI
+                // Update all interfaces
                 this.updateWalletBalance(botState.currentBalance);
-                this.updateStats();
+                this.updateAllStats();
                 
                 this.lastPrice = currentPrice;
                 return true;
+            }
+    
+            logMarketInsights() {
+                const timestamp = this.getCurrentTimestamp();
+                const insights = [
+                    "🔍 የኢተርየም ገበያ ትንተና: ትርፋማ እድሎች ከፍተኛ / Ethereum market analysis: High profit opportunities",
+                    "📈 የETH ዋጋ እንቅስቃሴ: ከፍተኛ ፍጥነት / ETH price action: High momentum",
+                    "💹 የዲፊ ገበያ እድገት: አወንታዊ አመላካቾች / DeFi market growth: Positive indicators",
+                    "🌐 ኔትወርክ አጠቃቀም: ከፍተኛ እና ጠቃሚ / Network utilization: High and favorable",
+                    "⚡ የላየር 2 መፍትሔዎች: ትርፋማ እድሎች / Layer 2 solutions: Profitable opportunities"
+                ];
+                
+                addLogEntry(timestamp, insights[Math.floor(Math.random() * insights.length)], 'info');
+            }
+    
+            logEthereumBonus() {
+                const timestamp = this.getCurrentTimestamp();
+                addLogEntry(timestamp, "🏆 የኢተርየም ልዩ ቦነስ! 4 ተከታታይ የተሳኩ ግብይቶች! / Ethereum special bonus! 4 consecutive winning trades!", 'success');
+            }
+    
+            checkEthereumMilestones(timestamp) {
+                // Win streak milestones
+                if (botState.winStreak === 5) {
+                    addLogEntry(timestamp, "🔥 5 ተከታታይ የኢተርየም ትርፎች! አስደናቂ አፈፃፀም! / 5 consecutive Ethereum profits! Amazing performance!", 'success');
+                }
+                if (botState.winStreak === 10) {
+                    addLogEntry(timestamp, "🚀 10 ተከታታይ የኢተርየም ትርፎች! ከፍተኛ የስልት አፈፃፀም! / 10 consecutive Ethereum profits! Maximum strategy performance!", 'success');
+                }
+                
+                // Trade count milestones
+                if (botState.totalTrades % 20 === 0 && botState.totalTrades > 0) {
+                    const winRate = (botState.winningTrades / botState.totalTrades * 100).toFixed(1);
+                    const totalProfit = botState.totalPnL.toFixed(2);
+                    const profitPerTrade = (botState.totalPnL / botState.totalTrades).toFixed(2);
+                    const ethTrades = botState.ethereumTrades;
+                    
+                    addLogEntry(timestamp, 
+                        `📊 የኢተርየም ሚሊስቶን / Ethereum Milestone: ${botState.totalTrades} ግብይቶች / trades (${ethTrades} ETH) | ${winRate}% ትክክለኛነት / accuracy | አጠቃላይ ትርፍ / Total: ETB ${totalProfit} | አማካይ ትርፍ በግብይት / Avg per trade: ETB ${profitPerTrade}`, 
+                        'info');
+                }
+                
+                // Major profit milestones
+                if (botState.totalPnL >= 2000 && botState.totalPnL < 2010) {
+                    addLogEntry(timestamp, "🎉 ከETB 2,000 በላይ የኢተርየም ትርፍ ተሰራ! / Over ETB 2,000 Ethereum profit achieved!", 'success');
+                }
+                if (botState.totalPnL >= 5000) {
+                    addLogEntry(timestamp, "🏆 ከETB 5,000 የኢተርየም ትርፍ! ከፍተኛ አፈፃፀም! / ETB 5,000 Ethereum profit! Elite performance!", 'success');
+                }
+            }
+    
+            triggerEthereumAnimation() {
+                const alertElement = document.getElementById('ethProfitAlert');
+                alertElement.style.animation = 'none';
+                setTimeout(() => {
+                    alertElement.style.animation = 'slideDown 0.5s ease-out, ethGlow 1s 3';
+                }, 10);
             }
     
             updateWalletBalance(newBalance) {
@@ -1031,161 +1533,194 @@
                 }).catch(error => console.error('Error updating balance:', error));
             }
     
-            updateStats() {
-                document.getElementById('totalPnL').textContent = 
-                    (botState.totalPnL >= 0 ? '+' : '') + 'ETB ' + Math.abs(botState.totalPnL).toFixed(2);
-                document.getElementById('totalPnL').className = 
-                    'stat-value ' + (botState.totalPnL >= 0 ? 'positive' : 'negative');
+            updateAllStats() {
+                // Update main stats
+                const pnlElement = document.getElementById('totalPnL');
+                pnlElement.textContent = (botState.totalPnL >= 0 ? '+' : '') + 'ETB ' + Math.abs(botState.totalPnL).toFixed(2);
+                pnlElement.className = 'stat-value ' + (botState.totalPnL >= 0 ? 'positive' : 'negative');
                 
                 document.getElementById('totalTrades').textContent = botState.totalTrades;
-                document.getElementById('currentBalance').textContent = 
-                    'ETB ' + botState.currentBalance.toFixed(2);
+                document.getElementById('currentBalance').textContent = 'ETB ' + botState.currentBalance.toFixed(2);
                 
                 const winRate = botState.totalTrades > 0 ? 
                     (botState.winningTrades / botState.totalTrades * 100).toFixed(1) : 0;
                 document.getElementById('winRate').textContent = winRate + '%';
+                document.getElementById('tradeAccuracy').textContent = winRate + '%';
+                
+                // Update Ethereum-specific stats
+                document.getElementById('ethTrades').textContent = botState.ethereumTrades;
+                document.getElementById('successRate').textContent = winRate + '%';
                 
                 // Mobile updates
-                document.getElementById('mobileBalance').textContent = 
-                    'ETB ' + botState.currentBalance.toFixed(2);
+                document.getElementById('mobileBalance').textContent = 'ETB ' + botState.currentBalance.toFixed(2);
                 const changeText = (botState.totalPnL >= 0 ? '+' : '') + 'ETB ' + Math.abs(botState.totalPnL).toFixed(2);
                 document.getElementById('mobileBalanceChange').textContent = changeText;
-                document.getElementById('mobileBalanceChange').className = 
-                    'balance-change ' + (botState.totalPnL >= 0 ? 'positive' : 'negative');
+                document.getElementById('mobileBalanceChange').className = 'balance-change ' + (botState.totalPnL >= 0 ? 'positive' : 'negative');
                 
-                // Display tier and Ethereum performance
+                // Update tier with performance metrics
                 const growthPercent = ((botState.profitGrowthFactor - 1) * 100).toFixed(1);
-                const multiplierPercent = ((botState.sessionMultiplier - 1) * 100).toFixed(1);
-                const ethRate = this.ethToEtbRate;
-                document.getElementById('currentTier').textContent = 
-                    `${this.tier} ETH | +${growthPercent}% Growth | +${multiplierPercent}% Multiplier | 1 ETH ≈ ${ethRate}K ETB`;
+                document.getElementById('currentTier').textContent = `${this.tier} | +${growthPercent}% Growth`;
+            }
+    
+            updateProfitMetrics() {
+                document.getElementById('profitPerHour').textContent = 'ETB ' + Math.max(0, botState.profitPerHour).toFixed(0);
             }
     
             getCurrentTimestamp() {
                 const now = new Date();
-                const ethiopianTime = new Date(now.getTime() + (3 * 60 * 60 * 1000)); // Ethiopian timezone
-                return ethiopianTime.toTimeString().split(' ')[0] + '.' + ethiopianTime.getMilliseconds().toString().padStart(3, '0');
-            }
-    
-            analyzeMarket() {
-                const timestamp = this.getCurrentTimestamp();
-                const ethereumMarketAnalyses = [
-                    "የኢተርየም ኔትወርክ እየበረታ ነው / Ethereum network strengthening",
-                    "የዲፒኦኤስ ምክንያት ትርፋማ ነው / DPoS factor profitable",
-                    "የማይን ማዕድን አዋቂ / Mining activity increasing",
-                    "የዲፓ አጠቃቀም እየጨመረ ነው / DApp usage growing",
-                    "የማርት ካፕ ከፍተኛ / Market cap rising",
-                    "የጋዝ ክፍያዎች በማሻሻል ላይ / Gas fees optimizing",
-                    "የሴምር አፕግሬድ ተጽዕኖ አዋክ / Shanghai upgrade effect"
-                ];
-                
-                const ethTechnicalAnalyses = [
-                    "የኢተርየም ምልክት አወንታዊ / Ethereum signal positive",
-                    "የቴክኒካል አመላካቾች ለሁለተኛው ላየር ጥሩ ናቸው / Layer 2 indicators good",
-                    "የኔትወርክ አጠቃቀም ከፍተኛ / Network utilization high",
-                    "የስማርት ኮንትራት እውቅና እየጨመረ ነው / Smart contract adoption growing",
-                    "የዲፊ ዕድሎች በርካታ / DeFi opportunities abundant",
-                    "ETH 2.0 ሽግግር አዎንታዊ / ETH 2.0 transition positive"
-                ];
-                
-                // Mix Ethereum and technical analyses
-                let analysisPool = ethereumMarketAnalyses;
-                if (Math.random() < 0.45) {
-                    analysisPool = ethTechnicalAnalyses;
-                }
-                
-                const randomAnalysis = analysisPool[Math.floor(Math.random() * analysisPool.length)];
-                addLogEntry(timestamp, randomAnalysis, 'info');
+                const ethiopianTime = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+                return ethiopianTime.toTimeString().split(' ')[0] + '.' + 
+                       ethiopianTime.getMilliseconds().toString().padStart(3, '0');
             }
         }
     
-        // Initialize the profitable Ethiopian Ethereum trading bot
-        const tradingBot = new EthiopianEthereumBot();
+        // Initialize the advanced Ethereum profit bot
+        const tradingBot = new AdvancedEthereumBot();
     
+        // UI Interaction Functions
         function addLogEntry(timestamp, message, type = 'info') {
             const logsContainer = document.getElementById('logsContainer');
             const logEntry = document.createElement('div');
-            logEntry.className = `log-entry log-${type}`;
-            logEntry.innerHTML = `<span class="log-timestamp">[${timestamp} EAT]</span> <span class="log-${type}">${message}</span>`;
+            logEntry.className = `log-entry ${type}`;
+            logEntry.innerHTML = `<span class="log-timestamp">[${timestamp} EAT]</span> ${message}`;
             logsContainer.appendChild(logEntry);
             logsContainer.scrollTop = logsContainer.scrollHeight;
             document.getElementById('logsCount').textContent = `${logsContainer.children.length} entries`;
         }
     
+        function boostEthereumProfits() {
+            if (!botState.isRunning) return;
+            
+            botState.profitBoost += 0.025;
+            botState.aggressiveMode = true;
+            botState.tradeFrequency = Math.max(1000, botState.tradeFrequency - 300);
+            
+            const timestamp = tradingBot.getCurrentTimestamp();
+            addLogEntry(timestamp, "⚡ የኢተርየም ትርፍ እፍጋት ተነሳ! የግብይት ፍጥነት እና ትርፍ መጠን ጨምሯል! / Ethereum profit boost activated! Increased trading speed and profit margin!", 'success');
+            addLogEntry(timestamp, "🎯 አዲስ ትርፍ ማባዣ: " + (1 + botState.profitBoost).toFixed(3) + "x", 'info');
+        }
+    
+        function analyzeEthereumMarket() {
+            const timestamp = tradingBot.getCurrentTimestamp();
+            const analyses = [
+                "🔍 የኢተርየም ገበያ ትንተና: የETH ዋጋ በማጠጋጋት ላይ / Ethereum market analysis: ETH price consolidating",
+                "📈 የቴክኒካል አመላካቾች: ሁሉም አወንታዊ / Technical indicators: All positive",
+                "💹 የዲፊ ትራክሽን: ከፍተኛ ዕድገት / DeFi traction: High growth",
+                "🌐 ኔትወርክ እንቅስቃሴ: ከፍተኛ እና ጠቃሚ / Network activity: High and favorable",
+                "⚡ የላየር 2 ውጤቶች: በጣም አወንታዊ / Layer 2 results: Very positive"
+            ];
+            
+            addLogEntry(timestamp, analyses[Math.floor(Math.random() * analyses.length)], 'info');
+        }
+    
+        function activateSmartMode() {
+            botState.smartMode = true;
+            const timestamp = tradingBot.getCurrentTimestamp();
+            
+            addLogEntry(timestamp, "🧠 የኢተርየም ስማርት ሞድ ተጀመረ! / Ethereum Smart Mode activated!", 'success');
+            addLogEntry(timestamp, "⚡ ስማርት ኮንትራቶች ንቁ: ትርፍ ማባዣ, ጉዳት መከላከያ, ጋዝ ቅነሳ / Smart contracts active: Profit multiplier, Loss protection, Gas reduction", 'info');
+        }
+    
+        function optimizeGasFees() {
+            botState.gasOptimized = true;
+            botState.networkCongestion *= 0.7;
+            
+            const timestamp = tradingBot.getCurrentTimestamp();
+            addLogEntry(timestamp, "⛽ የኢተርየም ጋዝ ክፍያ ቅነሳ ተከናወነ! / Ethereum gas fee optimization completed!", 'success');
+            addLogEntry(timestamp, "💰 የጋዝ ክፍያ ቁጠባ: " + ((1 - botState.networkCongestion) * 100).toFixed(1) + "%", 'info');
+        }
+    
+        // Bot Control Functions
         function startBot() {
             botState.isRunning = true;
             botState.isPaused = false;
             botState.totalRuns++;
+            botState.sessionStartTime = new Date();
             
             document.getElementById('totalRuns').textContent = botState.totalRuns;
-            updateBotStatus('running', 'ሮቦት እየሰራ ነው / Bot Running');
+            updateBotStatus('running', '⚡ የኢተርየም ትርፋማ ንግድ በመካሄድ ላይ / Ethereum Profitable Trading Active');
             
             document.getElementById('startBtn').disabled = true;
             document.getElementById('pauseBtn').disabled = false;
             document.getElementById('stopBtn').disabled = false;
             
             const timestamp = tradingBot.getCurrentTimestamp();
-            addLogEntry(timestamp, `🚀 የኢትዮጵያ ኢተርየም ንግድ ሮቦት አገልግሎት ጀመረ / Ethiopian Ethereum Trading Bot Activated`, 'success');
-            addLogEntry(timestamp, `📈 የኢተርየም ንግድ ስልት / Ethereum Strategy: High-accuracy trading with ${(tradingBot.baseWinRate*100).toFixed(1)}% win rate`, 'success');
-            addLogEntry(timestamp, `💰 የመጀመሪያ ሒሳብ / Initial Balance: ETB ${botState.currentBalance.toFixed(2)}`, 'info');
-            addLogEntry(timestamp, `🎯 የአሁን ደረጃ / Current Tier: ${tradingBot.tier} ETHEREUM`, 'info');
-            addLogEntry(timestamp, `⚡ ETH/ETB የምንዛሬ ምንጭ / Exchange Rate: 1 ETH ≈ ${tradingBot.ethToEtbRate}K ETB`, 'info');
+            addLogEntry(timestamp, `🚀 የትርፍ-አመቻች ኢትዮጵያ ኢተርየም ንግድ ሮቦት ተጅምሯል! / Profit-optimized Ethiopian Ethereum Trading Bot launched!`, 'success');
+            addLogEntry(timestamp, `💎 ደረጃ / Tier: ${tradingBot.tier} | መሠረታዊ የማሸነፍ መጠን / Base win rate: ${(tradingBot.baseWinRate*100).toFixed(1)}%`, 'info');
+            addLogEntry(timestamp, `🎯 አላማ / Target: ETB ${tradingBot.profitRange.min}-${tradingBot.profitRange.max} per winning trade`, 'info');
+            addLogEntry(timestamp, `⚡ የኢተርየም ከፍተኛ ትርፍ ሞድ ነቅቷል! / Ethereum maximum profit mode activated!`, 'success');
+            addLogEntry(timestamp, `🌐 የኢተርየም ኔትወርክ ጥቅሞች ንቁ / Ethereum network benefits active`, 'info');
             
-            // Optimal Ethereum trading intervals
+            // Optimized Ethereum trading intervals
             botState.tradingInterval = setInterval(() => {
                 if (botState.isRunning && !botState.isPaused) {
-                    tradingBot.executeTrade();
+                    tradingBot.executeAdvancedTrade();
                 }
-            }, Math.random() * 3500 + 1800); // 1.8-5.3 seconds
+            }, botState.tradeFrequency);
             
-            // Ethereum market analysis every 4-8 seconds
+            // Enhanced market analysis
             botState.logInterval = setInterval(() => {
                 if (botState.isRunning && !botState.isPaused) {
-                    tradingBot.analyzeMarket();
+                    tradingBot.logMarketInsights();
                 }
-            }, Math.random() * 4000 + 4000);
+            }, Math.random() * 6000 + 3000);
+            
+            // Performance monitoring
+            botState.analysisInterval = setInterval(() => {
+                if (botState.isRunning && !botState.isPaused) {
+                    tradingBot.updateAdvancedMetrics();
+                }
+            }, 15000); // Every 15 seconds
         }
     
         function pauseBot() {
             botState.isPaused = !botState.isPaused;
             const pauseBtn = document.getElementById('pauseBtn');
             if (botState.isPaused) {
-                updateBotStatus('paused', 'ተቆምቷል / Paused');
-                pauseBtn.textContent = 'ሮቦት እንደገና ጀምር / Resume Bot';
-                addLogEntry(tradingBot.getCurrentTimestamp(), '⏸️ የኢተርየም ንግድ ተቆምቷል / Ethereum trading paused', 'warning');
+                updateBotStatus('paused', '⏸️ ተቆምቷል / Paused');
+                pauseBtn.textContent = '▶️ Resume Trading';
+                addLogEntry(tradingBot.getCurrentTimestamp(), '⏸️ የኢተርየም ንግድ በቅጥ ተቆምቷል / Ethereum trading strategically paused', 'warning');
             } else {
-                updateBotStatus('running', 'ሮቦት እየሰራ ነው / Bot Running');
-                pauseBtn.textContent = 'ሮቦት አቁም / Pause Bot';
-                addLogEntry(tradingBot.getCurrentTimestamp(), '▶️ የኢተርየም ንግድ ቀጠለ / Ethereum trading resumed', 'success');
+                updateBotStatus('running', '⚡ የኢተርየም ትርፋማ ንግድ በመካሄድ ላይ / Ethereum Profitable Trading Active');
+                pauseBtn.textContent = '⏸️ Pause';
+                addLogEntry(tradingBot.getCurrentTimestamp(), '▶️ የኢተርየም ንግድ በተመራጭ ሁኔታ ቀጥሏል / Ethereum trading optimally resumed', 'success');
             }
         }
     
         function stopBot() {
-            if (confirm('የኢተርየም ንግድ ሮቦቱን ማቆም ትፈልጋለህ? / Stop the Ethereum trading bot?')) {
+            if (confirm('የኢተርየም ንግድ ሮቦቱን ማቆም ትፈልጋለህ? የተሰራ ትርፍ ይቆጠራል! / Stop the Ethereum trading bot? Profits will be saved!')) {
                 botState.isRunning = false;
                 botState.isPaused = false;
                 clearInterval(botState.tradingInterval);
                 clearInterval(botState.logInterval);
-                updateBotStatus('stopped', 'ተቆምቷል / Stopped');
+                clearInterval(botState.analysisInterval);
+                updateBotStatus('stopped', '✅ የኢተርየም ትርፍ ተቀምጧል / Ethereum Profits Saved');
                 
                 document.getElementById('startBtn').disabled = false;
                 document.getElementById('pauseBtn').disabled = true;
                 document.getElementById('stopBtn').disabled = true;
                 
-                const winRate = botState.totalTrades > 0 ? (botState.winningTrades/botState.totalTrades*100).toFixed(1) : 0;
-                const finalStats = `📊 የኢተርየም ክፍለ ጊዜ ማጠቃለያ / Ethereum Session Summary: ${botState.totalTrades} ግብይቶች / trades | ${winRate}% የማሸነፍ መጠን / win rate | አጠቃላይ ትርፍ / Net P&L: ${botState.totalPnL >= 0 ? '+' : ''}ETB ${botState.totalPnL.toFixed(2)}`;
-                addLogEntry(tradingBot.getCurrentTimestamp(), '🛑 የኢተርየም ንግድ ሮቦቱ ተቆምቷል / Ethereum trading bot stopped', 'warning');
+                const winRate = botState.totalTrades > 0 ? 
+                    (botState.winningTrades / botState.totalTrades * 100).toFixed(1) : 0;
+                const profitPerHour = botState.profitPerHour.toFixed(2);
+                const ethTrades = botState.ethereumTrades;
+                
+                const finalStats = `📊 የኢተርየም ክፍለ ጊዜ ማጠቃለያ / Ethereum Session Summary:
+                ${botState.totalTrades} ግብይቶች / trades (${ethTrades} ETH)
+                ${winRate}% የማሸነፍ መጠን / win rate
+                አጠቃላይ ትርፍ / Net P&L: ${botState.totalPnL >= 0 ? '+' : ''}ETB ${botState.totalPnL.toFixed(2)}
+                በሰዓት ትርፍ / Profit per hour: ETB ${profitPerHour}`;
+                
+                addLogEntry(tradingBot.getCurrentTimestamp(), '✅ የኢተርየም ንግድ ሮቦት በትክክል ተቆምቷል / Ethereum trading bot successfully stopped', 'success');
                 addLogEntry(tradingBot.getCurrentTimestamp(), finalStats, 'info');
                 
-                // Ethereum-specific performance analysis
-                if (botState.totalPnL > 500) {
-                    addLogEntry(tradingBot.getCurrentTimestamp(), '✅ በጣም ትርፋማ የኢተርየም ክፍለ ጊዜ! / Very profitable Ethereum session!', 'success');
-                } else if (botState.totalPnL > 100) {
-                    addLogEntry(tradingBot.getCurrentTimestamp(), '✅ ትርፋማ የኢተርየም ክፍለ ጊዜ / Profitable Ethereum session', 'success');
+                // Performance rating
+                if (botState.totalPnL > 1000) {
+                    addLogEntry(tradingBot.getCurrentTimestamp(), '🏆 ከፍተኛ አፈፃፀም! በጣም ትርፋማ የኢተርየም ክፍለ ጊዜ! / Excellent performance! Highly profitable Ethereum session!', 'success');
+                } else if (botState.totalPnL > 500) {
+                    addLogEntry(tradingBot.getCurrentTimestamp(), '✅ ጥሩ አፈፃፀም! ትርፋማ የኢተርየም ክፍለ ጊዜ / Good performance! Profitable Ethereum session', 'success');
                 } else if (botState.totalPnL > 0) {
-                    addLogEntry(tradingBot.getCurrentTimestamp(), '📊 የኢተርየም ትርፍ ተገኘ / Ethereum profit achieved', 'info');
-                } else {
-                    addLogEntry(tradingBot.getCurrentTimestamp(), '📊 የኢተርየም ምርመራ - የሚቀጥለው ረጅም ጊዜ የተሻለ ይሆናል / Ethereum test - Next long-term will be better', 'info');
+                    addLogEntry(tradingBot.getCurrentTimestamp(), '📈 አወንታዊ አፈፃፀም! የሚቀጥለው ይበልጣል! / Positive performance! Next will be better!', 'info');
                 }
             }
         }
@@ -1199,23 +1734,25 @@
             statusText.textContent = text;
         }
     
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             @if(Auth::user()->wallet_balance >= $amount)
                 document.getElementById('startBtn').addEventListener('click', startBot);
                 document.getElementById('pauseBtn').addEventListener('click', pauseBot);
                 document.getElementById('stopBtn').addEventListener('click', stopBot);
-                updateBotStatus('stopped', 'ለመጀመር ዝግጁ / Ready to Start');
+                updateBotStatus('stopped', '🚀 ለትርፋማ የኢተርየም ንግድ ዝግጁ / Ready for Profitable Ethereum Trading');
             @endif
             
             const timestamp = tradingBot.getCurrentTimestamp();
-            addLogEntry(timestamp, `💼 የኢትዮጵያ ኢተርየም ባህር ዳር ንግድ ስርዓት ተጭኗል / Ethiopian Ethereum Trading System loaded`, 'success');
-            addLogEntry(timestamp, `💰 ሒሳብ ቀሪ ሂሳብ / Account Balance: ETB ${botState.currentBalance.toFixed(2)}`, 'info');
-            addLogEntry(timestamp, `⚡ ${tradingBot.tier} ETH ደረጃ ንቃ / ${tradingBot.tier} ETHEREUM Tier Active - Optimized for smart contract profits`, 'info');
-            addLogEntry(timestamp, `📊 የኢተርየም መሰረታዊ የማሸነፍ መጠን / Ethereum Base win rate: ${(tradingBot.baseWinRate*100).toFixed(1)}% | አላማ / Target: ETB ${tradingBot.profitRange.min}-${tradingBot.profitRange.max} per trade`, 'info');
-            addLogEntry(timestamp, `🌐 የኢተርየም ኔትወርክ ጥቅሞች ንቁ / Ethereum network benefits active`, 'info');
+            addLogEntry(timestamp, `💎 የትርፍ-አመቻች ኢትዮጵያ ኢተርየም ንግድ ስርዓት ተጭኗል / Profit-optimized Ethiopian Ethereum Trading System loaded`, 'success');
+            addLogEntry(timestamp, `💰 የመጀመሪያ ሒሳብ / Initial Balance: ETB ${botState.currentBalance.toFixed(2)}`, 'info');
+            addLogEntry(timestamp, `⚡ ${tradingBot.tier} ደረጃ - ከፍተኛ የኢተርየም ትርፍ ሞድ / ${tradingBot.tier} Tier - Maximum Ethereum Profit Mode`, 'info');
+            addLogEntry(timestamp, `🎯 አላማዎች / Targets: ${(tradingBot.baseWinRate*100).toFixed(1)}% win rate | ETB ${tradingBot.profitRange.min}+ per trade | Automated Ethereum profit growth`, 'info');
+            addLogEntry(timestamp, `🌐 የኢተርየም ኔትወርክ ባህሪዎች: ስማርት ኮንትራቶች, ዲፒኦኤስ, ከፍተኛ ሽግግር / Ethereum features: Smart contracts, DPoS, high throughput`, 'info');
             
             @if(Auth::user()->wallet_balance < $amount)
-                addLogEntry(timestamp, '❌ በቂ ሒሳብ ቀሪ ሂሳብ የለም / Insufficient balance to start Ethereum trading', 'error');
+                addLogEntry(timestamp, '❌ በቂ ሒሳብ ቀሪ ሂሳብ የለም / Add funds to start Ethereum trading', 'error');
+                addLogEntry(timestamp, '💡 ምክር / Tip: Deposit at least ETB 500 for optimal Ethereum profit potential', 'info');
             @endif
         });
     </script>

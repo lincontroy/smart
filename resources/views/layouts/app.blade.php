@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart - Dashboard</title>
+    <title>Digital Smart Market - Dashboard</title>
     <link rel="stylesheet" type="text/css" href="dashboard.css">
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -194,7 +194,7 @@
     <header class="header">
         <div class="logo-section">
             <div class="logo-icon">+</div>
-            <span class="logo-text">Smart</span>
+            <span class="logo-text">Digital Smart Market</span>
         </div>
         
         <button class="mobile-menu-btn">☰</button>

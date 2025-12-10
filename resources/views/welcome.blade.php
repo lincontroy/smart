@@ -6,9 +6,9 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <title>Smart - Advanced AI Trading Platform</title>
+  <title>Digital Smart Market - Advanced AI Trading Platform</title>
   <meta name="description"
-    content="Experience the future of trading with Smart. Multiply your balance with AI-powered trading packages and real-time market analytics.">
+    content="Experience the future of trading with Digital Smart Market. Multiply your balance with AI-powered trading packages and real-time market analytics.">
   <link rel="icon" type="image/png" href="https://apextraderplc.com/favicon.png">
   <link rel="apple-touch-icon" href="https://apextraderplc.com/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com/">
@@ -26,7 +26,7 @@
     <div class="min-h-screen bg-background">
       <header class="border-b border-border/50 backdrop-blur-xl bg-background/95 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
-          <div class="flex items-center gap-3">Smart</div>
+          <div class="flex items-center gap-3">Digital Smart Market</div>
           <div class="flex items-center gap-3"><a href="/auth"
               class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover-elevate active-elevate-2 border border-transparent min-h-9 px-4 py-2"
               data-testid="button-signin-header">Sign In</a><a href="/auth"
@@ -213,7 +213,7 @@
             <div class="max-w-2xl space-y-4 md:space-y-6">
               <div
                 class="inline-block bg-primary/20 border border-primary/30 rounded-full px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm">
-                <span class="text-primary font-medium">Welcome to Smart</span></div>
+                <span class="text-primary font-medium">Welcome to Digital Smart Market</span></div>
               <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">Grow Your
                 Wealth Faster</h1>
               <p class="text-base md:text-xl text-muted-foreground">Our platform uses AI-driven trading tech to maximize
@@ -694,7 +694,7 @@
       </section>
       <section class="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20">
         <div class="text-center space-y-3 md:space-y-4 mb-8 md:mb-12">
-          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold">Why Choose Smart?</h2>
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold">Why Choose Digital Smart Market?</h2>
           <p class="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto px-4">Experience the ultimate trading
             platform with cutting-edge features designed for your success.</p>
         </div>
@@ -750,7 +750,7 @@
           class="shadcn-card rounded-xl bg-card text-card-foreground shadow-sm p-8 md:p-12 lg:p-16 text-center space-y-4 md:space-y-6 bg-gradient-to-br from-card to-card/50 border-2 border-primary/20">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-bold">Ready to Start Trading?</h3>
           <p class="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-4">Join thousands of traders who are
-            already multiplying their portfolios with Smart.</p>
+            already multiplying their portfolios with Digital Smart Market.</p>
           <div
             class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 pt-2 md:pt-4">
             <a href="/auth"
@@ -769,8 +769,8 @@
         <div class="max-w-7xl mx-auto px-4 md:px-8 py-8">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2 text-muted-foreground">
-                Smart
-               <span>© 2020 Smart. All rights reserved.</span></div>
+                Digital Smart Market
+               <span>© 2020 Digital Smart Market. All rights reserved.</span></div>
           </div>
         </div>
       </footer>
