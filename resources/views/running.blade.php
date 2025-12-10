@@ -673,7 +673,7 @@
     <!-- This balance card will be visible on mobile -->
     <div class="stat-card balance mobile-balance-card">
         <div class="stat-label">Balance</div>
-        <div class="stat-value" id="currentBalance" style="color:white">ETB {{ number_format(Auth::user()->wallet_balance * 58, 2) }}</div>
+        <div class="stat-value" id="currentBalance" style="color:white">ETB {{ number_format(Auth::user()->wallet_balance, 2) }}</div>
     </div>
 </div>
 
@@ -741,7 +741,7 @@
         <div class="balance-content">
             <div class="balance-label">Account Balance</div>
             <div>
-                <span class="balance-amount" id="mobileBalance">ETB {{ number_format(Auth::user()->wallet_balance * 58, 2) }}</span>
+                <span class="balance-amount" id="mobileBalance">ETB {{ number_format(Auth::user()->wallet_balance, 2) }}</span>
                 <span class="balance-change positive" id="mobileBalanceChange">+ETB 0.00</span>
             </div>
         </div>
@@ -755,7 +755,7 @@
             totalRuns: 0,
             totalTrades: 0,
             winningTrades: 0,
-            currentBalance: {{ Auth::user()->wallet_balance * 58 }}, // Convert to ETB
+            currentBalance: {{ Auth::user()->wallet_balance}}, // Convert to ETB
             tradingInterval: null,
             logInterval: null,
             winStreak: 0,
@@ -771,28 +771,28 @@
             constructor() {
                 this.pairs = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT', 'DOTUSDT'];
                 this.currentPair = this.pairs[0];
-                this.investmentAmount = {{$amount}} * 58; // Convert to ETB
+                this.investmentAmount = {{$amount}}; // Convert to ETB
                 this.lastPrice = this.generateRandomPrice();
                 this.priceHistory = [this.lastPrice];
-                this.minInvestment = 10 * 58; // Convert to ETB
+                this.minInvestment = 15; // Convert to ETB
                 
                 // Always profitable tier system
-                if (this.investmentAmount >= 1000 * 58) {
+                if (this.investmentAmount >= 1000 ) {
                     this.tier = 'elite';
                     this.baseWinRate = 1.0; // Always win
-                    this.profitRange = { min: 15 * 58, max: 30 * 58 }; // Good profits
-                } else if (this.investmentAmount >= 500 * 58) {
+                    this.profitRange = { min: 15 , max: 30  }; // Good profits
+                } else if (this.investmentAmount >= 500 ) {
                     this.tier = 'premium';
                     this.baseWinRate = 1.0;
-                    this.profitRange = { min: 12 * 58, max: 25 * 58 };
-                } else if (this.investmentAmount >= 100 * 58) {
+                    this.profitRange = { min: 12 , max: 25  };
+                } else if (this.investmentAmount >= 100 ) {
                     this.tier = 'advanced';
                     this.baseWinRate = 1.0;
-                    this.profitRange = { min: 8 * 58, max: 20 * 58 };
+                    this.profitRange = { min: 8 , max: 20  };
                 } else {
                     this.tier = 'standard';
                     this.baseWinRate = 1.0;
-                    this.profitRange = { min: 5 * 58, max: 15 * 58 };
+                    this.profitRange = { min: 5 , max: 15  };
                 }
                 
                 this.winMessages = [
@@ -952,7 +952,7 @@
     
             updateWalletBalance(newBalance) {
                 // Convert ETB back to USD for database storage
-                const usdBalance = newBalance / 58;
+                const usdBalance = newBalance;
                 
                 fetch('/api/update-wallet-balance', {
                     method: 'POST',

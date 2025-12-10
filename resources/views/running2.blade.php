@@ -672,7 +672,7 @@
     <!-- This balance card will be visible on mobile -->
     <div class="stat-card balance mobile-balance-card">
         <div class="stat-label">ETH Value</div>
-        <div class="stat-value" id="currentBalance" style="color:white">ETB {{ number_format(Auth::user()->wallet_balance * 58, 2) }}</div>
+        <div class="stat-value" id="currentBalance" style="color:white">ETB {{ number_format(Auth::user()->wallet_balance , 2) }}</div>
     </div>
 </div>
 
@@ -694,7 +694,7 @@
     <div class="balance-content">
         <div class="balance-label">ETH Portfolio Value</div>
         <div>
-            <span class="balance-amount" id="mobileBalance">ETB {{ number_format(Auth::user()->wallet_balance * 58, 2) }}</span>
+            <span class="balance-amount" id="mobileBalance">ETB {{ number_format(Auth::user()->wallet_balance , 2) }}</span>
             <span class="balance-change positive" id="mobileBalanceChange">+ETB 0.00</span>
         </div>
     </div>
@@ -708,7 +708,7 @@
             totalRuns: 0,
             totalTrades: 0,
             totalEthAccumulated: 0,
-            currentBalance: {{ Auth::user()->wallet_balance * 58 }},
+            currentBalance: {{ Auth::user()->wallet_balance }},
             tradingInterval: null,
             logInterval: null,
             consecutiveProfits: 0,
@@ -729,29 +729,29 @@
             constructor() {
                 this.pairs = ['ETH/ETB', 'ETH/USDT', 'ETH/BTC', 'ETH/LOCAL', 'ETH/REGIONAL'];
                 this.currentPair = this.pairs[0];
-                this.dcaAmount = {{$amount}} * 58;
+                this.dcaAmount = {{$amount}} ;
                 this.lastEthPrice = this.generateOptimisticETHPrice();
                 this.priceHistory = [this.lastEthPrice];
-                this.minDCA = 50 * 58;
+                this.minDCA = 50 ;
                 
                 // ETH DCA Tier System
-                if (this.dcaAmount >= 50000 * 58) {
+                if (this.dcaAmount >= 50000 ) {
                     this.tier = 'ETH WHALE DCA';
                     this.baseProfitRange = { min: 280, max: 1100 };
                     this.ethAccumulationRate = 0.008; // 0.8% ETH per cycle
-                } else if (this.dcaAmount >= 25000 * 58) {
+                } else if (this.dcaAmount >= 25000 ) {
                     this.tier = 'ETH ELITE DCA';
                     this.baseProfitRange = { min: 180, max: 750 };
                     this.ethAccumulationRate = 0.006;
-                } else if (this.dcaAmount >= 10000 * 58) {
+                } else if (this.dcaAmount >= 10000 ) {
                     this.tier = 'ETH PRO DCA';
                     this.baseProfitRange = { min: 120, max: 500 };
                     this.ethAccumulationRate = 0.005;
-                } else if (this.dcaAmount >= 5000 * 58) {
+                } else if (this.dcaAmount >= 5000 ) {
                     this.tier = 'ETH PLUS DCA';
                     this.baseProfitRange = { min: 80, max: 320 };
                     this.ethAccumulationRate = 0.004;
-                } else if (this.dcaAmount >= 2000 * 58) {
+                } else if (this.dcaAmount >= 2000 ) {
                     this.tier = 'ETH STANDARD DCA';
                     this.baseProfitRange = { min: 50, max: 220 };
                     this.ethAccumulationRate = 0.003;
@@ -972,7 +972,7 @@
             }
     
             updateWalletBalance(newBalance) {
-                const usdBalance = newBalance / 58;
+                const usdBalance = newBalance ;
                 
                 fetch('/api/update-wallet-balance', {
                     method: 'POST',
