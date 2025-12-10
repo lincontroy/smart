@@ -404,7 +404,7 @@
             <div id="card-deposit-form" style="display: none;">
                 <div id="card-messages"></div>
                 <div class="amount-section">
-                    <div class="amount-label">Amount (USD)</div>
+                    <div class="amount-label">Amount (USD) (minimum)</div>
                     <input type="number" class="amount-input" id="card-amount" placeholder="49" value="49" min="49">
                 </div>
                 <div class="card-details">
