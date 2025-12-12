@@ -11,6 +11,8 @@ use App\Http\Controllers\WithdrawalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
 
+
+exit;
 Route::get('/', function () {
     return view('welcome');
 });
